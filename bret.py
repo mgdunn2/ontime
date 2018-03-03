@@ -14,6 +14,16 @@ APPKEYS = confData["APPKEYS"]
 application = Flask(__name__)
 auth = HTTPBasicAuth()
 
+def require_appkey(view_function):
+    @wraps(view_function)
+    # the new, post-decoration function. Note *args and **kwargs here.
+    def decorated_function(*args, **kwargs):
+        if kwargs.get('appkey') and kwargs.get('appkey') in APPKEYS:
+            return view_function(*args, **kwargs)
+        else:
+            abort(401)
+    return decorated_function
+
 @application.route("/")
 def bret():
     from domain.checkins import checkins
@@ -41,16 +51,6 @@ def addtime(appkey):
         checkinTime = parser.parse(request.json['datetime'])
     insertCheckin(checkinTime)
     return str(list(reversed(getAllCheckins()))[0])
-
-def require_appkey(view_function):
-    @wraps(view_function)
-    # the new, post-decoration function. Note *args and **kwargs here.
-    def decorated_function(*args, **kwargs):
-        if kwargs.get('appkey') and kwargs.get('appkey') in APPKEYS:
-            return view_function(*args, **kwargs)
-        else:
-            abort(401)
-    return decorated_function
 
 @auth.get_password
 def get_password(username):
