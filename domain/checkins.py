@@ -1,5 +1,5 @@
 from db.bretDb import insertCheckin, getAllCheckins
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 class checkins():
     @staticmethod
@@ -39,3 +39,12 @@ class checkins():
 
     def getMostRecent(self):
         return list(reversed(self.checkins))[0]
+
+    def isOnTime(self):
+        checkinTime = self.getFirstCheckinForDay()
+        prevCheckinTime = self.getFirstCheckinForPrevDay()
+        if prevCheckinTime is not None and datetime.now().time() < time(hour=9, minute=45):
+            return prevCheckinTime.time() < time(hour=9, minute=45)
+        elif checkinTime is not None:
+            return checkinTime.time() < time(hour=9,minute=45)
+        return False

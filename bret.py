@@ -28,15 +28,7 @@ def require_appkey(view_function):
 def bret():
     from domain.checkins import checkins
     checkins = checkins()
-    checkinTime = checkins.getFirstCheckinForDay()
-    prevCheckinTime = checkins.getFirstCheckinForPrevDay()
-    isOnTime = False
-    wasOnTimeYesterday = False
-    if prevCheckinTime is not None and datetime.now().time() < time(hour=9, minute=45):
-        isOnTime = prevCheckinTime.time() < time(hour=9, minute=45)
-    elif checkinTime is not None:
-        isOnTime = checkinTime.time() < time(hour=9,minute=45)
-    return render_template('bretOnTime.html', isOnTime=isOnTime)
+    return render_template('bretOnTime.html', isOnTime=checkins.isOnTime())
 
 @application.route("/checkin/list")
 @auth.login_required
