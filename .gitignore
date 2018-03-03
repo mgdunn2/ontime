@@ -1,0 +1,11 @@
+*.pyc
+*.ini
+stuffToKnow.txt
+*.sock
+*.sock=
+*.sqlite
+*.bak
+insertReadCheckin.py
+
+bretenv/
+logs/
