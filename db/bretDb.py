@@ -10,13 +10,9 @@ confData = json.load(open(get_script_path() + '/ontime.conf'))
 
 sql_file = get_script_path() + '/db/' + confData["sql_file"]
 
-def openConnection():
-    return sqlite3.connect(sql_file, detect_types=sqlite3.PARSE_DECLTYPES)
-
 def transaction(func):
     def new_func(*args, **kwargs):
-        print "something"
-        connection = openConnection()
+        connection = sqlite3.connect(sql_file, detect_types=sqlite3.PARSE_DECLTYPES)
         cursor = connection.cursor()
         try:
             retval = func(cursor, *args, **kwargs)
@@ -27,13 +23,9 @@ def transaction(func):
         finally:
             cursor.close()
             connection.close()
-
         return retval
-
-    # Tidy up the help()-visible docstrings to be nice
     new_func.__name__ = func.__name__
     new_func.__doc__ = func.__doc__
-
     return new_func
 
 @transaction
