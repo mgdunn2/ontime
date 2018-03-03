@@ -28,10 +28,10 @@ def require_appkey(view_function):
 
 @application.route("/")
 def bret():
-    from db.bretDb import insertCheckin, getAllCheckins
-    checkins = getAllCheckins()
-    checkinTime = getFirstCheckinForDay(checkins)
-    prevCheckinTime = getFirstCheckinForPrevDay(checkins)
+    from domain.checkins import checkins
+    checkins = checkins()
+    checkinTime = checkins.getFirstCheckinForDay()
+    prevCheckinTime = checkins.getFirstCheckinForPrevDay()
     isOnTime = False
     wasOnTimeYesterday = False
     if prevCheckinTime is not None and datetime.now().time() < time(hour=9, minute=45):
