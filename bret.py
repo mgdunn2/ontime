@@ -5,6 +5,7 @@ from flask import Flask, render_template, make_response, jsonify, request, abort
 from flask_httpauth import HTTPBasicAuth
 from datetime import datetime, time, timedelta
 from dateutil import parser
+from db.bretDb import insertCheckin, getAllCheckins
 
 confData = json.load(open('ontime.conf'))
 
@@ -76,21 +77,17 @@ def test(appkey):
 @application.route("/checkin/list")
 @auth.login_required
 def checkinList():
-    from db.bretDb import insertCheckin, getAllCheckins
-    checkins = getAllCheckins();
-    return jsonify(checkins)
+    return jsonify(getAllCheckins())
 
 @application.route("/checkin", methods=["POST"])
 @auth.login_required
 def checkin():
-    from db.bretDb import insertCheckin, getAllCheckins
     insertCheckin(datetime.now())
     return str(list(reversed(getAllCheckins()))[0])
 
 @application.route("/addtime", methods=["POST"])
 @auth.login_required
 def addtime():
-    from db.bretDb import insertCheckin, getAllCheckins
     checkinTime = datetime.now()
     if request.json and 'datetime' in request.json:
         checkinTime = parser.parse(request.json['datetime'])
