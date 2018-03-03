@@ -5,6 +5,7 @@ stuffToKnow.txt
 *.sock=
 *.sqlite
 *.bak
+*.conf
 insertReadCheckin.py
 
 bretenv/

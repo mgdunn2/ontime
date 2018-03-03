@@ -1,14 +1,19 @@
+import os
+import sys
 import sqlite3
+
+def get_script_path():
+    return os.path.dirname(os.path.realpath(sys.argv[0]))
+
+sql_file = get_script_path() + '/db/bret_db.sqlite'
 
 class db():
 	def __init__(self):
-		self.sql_file = '/home/mgdunn/bret/db/bret_db.sqlite'
-		#self.sql_file = '/Users/mgdunn/bret/db/bret_db.sqlite'
 		self.connection = None
 
 	def openConnection(self):
 		if self.connection is None:
-			self.connection = sqlite3.connect(self.sql_file, detect_types=sqlite3.PARSE_DECLTYPES)
+			self.connection = sqlite3.connect(sql_file, detect_types=sqlite3.PARSE_DECLTYPES)
 		return self.connection
 
 	def beginTransaction(self):
