@@ -2,10 +2,6 @@ from db.bretDb import insertCheckin, getAllCheckins
 from datetime import datetime, timedelta, time
 
 class checkins():
-    @staticmethod
-    def getAll():
-        print getAllCheckins()
-
     def __init__(self):
         self.checkins = getAllCheckins()
 
