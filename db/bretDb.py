@@ -1,11 +1,14 @@
 import os
 import sys
 import sqlite3
+import json
 
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
-sql_file = get_script_path() + '/db/bret_db.sqlite'
+confData = json.load(open(get_script_path() + '/ontime.conf'))
+
+sql_file = get_script_path() + '/db/' + confData["sql_file"]
 
 class db():
     def __init__(self):

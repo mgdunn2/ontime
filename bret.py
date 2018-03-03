@@ -1,19 +1,19 @@
 import sys
+import json
 from functools import wraps
 from flask import Flask, render_template, make_response, jsonify, request, abort
 from flask_httpauth import HTTPBasicAuth
 from datetime import datetime, time, timedelta
 from dateutil import parser
 
+confData = json.load(open('ontime.conf'))
+
 application = Flask(__name__)
 auth = HTTPBasicAuth()
 
-users = {
-    "bret": "relevantxkcd",
-    "mike": "passwordwordpass"
-}
+users = confData["users"]
 
-APPKEYS = ['14ee814b-4be0-45b6-ad3e-5029e00c414d']
+APPKEYS = confData["APPKEYS"]
 
 def require_appkey(view_function):
     @wraps(view_function)
