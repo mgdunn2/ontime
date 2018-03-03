@@ -10,51 +10,45 @@ confData = json.load(open(get_script_path() + '/ontime.conf'))
 
 sql_file = get_script_path() + '/db/' + confData["sql_file"]
 
-class db():
-    def __init__(self):
-        self.connection = None
+def openConnection():
+    return sqlite3.connect(sql_file, detect_types=sqlite3.PARSE_DECLTYPES)
 
-    def openConnection(self):
-        if self.connection is None:
-            self.connection = sqlite3.connect(sql_file, detect_types=sqlite3.PARSE_DECLTYPES)
-        return self.connection
+def transaction(func):
+    def new_func(*args, **kwargs):
+        print "something"
+        connection = openConnection()
+        cursor = connection.cursor()
+        try:
+            retval = func(cursor, *args, **kwargs)
+            connection.commit()
+        except:
+            connection.rollback()
+            raise
+        finally:
+            cursor.close()
+            connection.close()
 
-    def beginTransaction(self):
-        self.results = None
-        self.cursor = self.openConnection().cursor();
+        return retval
 
-    def fetchall(self):
-        self.cursor.fetchall()
+    # Tidy up the help()-visible docstrings to be nice
+    new_func.__name__ = func.__name__
+    new_func.__doc__ = func.__doc__
 
-    def commitTranscation(self):
-        if self.connection is not None:
-            self.connection.commit()
-            self.results = self.cursor.fetchall()
-            self.connection.close()
-        self.cursor = None
-        self.connection = None
+    return new_func
 
-    def rollbackTransaction(self):
-        if self.cursor is not None:
-            self.cursor.rollback()
-        self.results = None
-        self.cursor = None
+@transaction
+def insertCheckin(cursor, datetime):
+    cursor.execute('SELECT max(`id`) from `checkins`;')
+    #self.cursor.execute('SELECT * from `checkins`;')
+    results = cursor.fetchall()
+    if results is None or len(results) == 0 or results[0][0] == None:
+        nextId = 0
+    else:
+        nextId = results[0][0] + 1
+    cursor.execute('insert into `checkins` values(?, ?)', (nextId, datetime))
 
-    def insertCheckin(self, datetime):
-        self.beginTransaction()
-        self.cursor.execute('SELECT max(`id`) from `checkins`;')
-        #self.cursor.execute('SELECT * from `checkins`;')
-        results = self.cursor.fetchall()
-        if results is None or len(results) == 0 or results[0][0] == None:
-            nextId = 0
-        else:
-            nextId = results[0][0] + 1
-        self.cursor.execute('insert into `checkins` values(?, ?)', (nextId, datetime))
-        self.commitTranscation()
-
-    def getAllCheckins(self):
-        self.beginTransaction()
-        self.cursor.execute('SELECT `check_in_time` from `checkins`;')
-        self.commitTranscation();
-        return sorted([result[0] for result in self.results])
+@transaction
+def getAllCheckins(cursor):
+    cursor.execute('SELECT `check_in_time` from `checkins`;')
+    return sorted([result[0] for result in cursor.fetchall()])
 

@@ -27,9 +27,8 @@ def require_appkey(view_function):
 
 @application.route("/")
 def bret():
-    from db.bretDb import db
-    db = db()
-    checkins = db.getAllCheckins()
+    from db.bretDb import insertCheckin, getAllCheckins
+    checkins = getAllCheckins()
     checkinTime = getFirstCheckinForDay(checkins)
     prevCheckinTime = getFirstCheckinForPrevDay(checkins)
     isOnTime = False
@@ -77,29 +76,26 @@ def test(appkey):
 @application.route("/checkin/list")
 @auth.login_required
 def checkinList():
-    from db.bretDb import db
-    db = db();
-    checkins = db.getAllCheckins();
+    from db.bretDb import insertCheckin, getAllCheckins
+    checkins = getAllCheckins();
     return jsonify(checkins)
 
 @application.route("/checkin", methods=["POST"])
 @auth.login_required
 def checkin():
-    from db.bretDb import db
-    db = db();
-    db.insertCheckin(datetime.now())
-    return str(list(reversed(db.getAllCheckins()))[0])
+    from db.bretDb import insertCheckin, getAllCheckins
+    insertCheckin(datetime.now())
+    return str(list(reversed(getAllCheckins()))[0])
 
 @application.route("/addtime", methods=["POST"])
 @auth.login_required
 def addtime():
-    from db.bretDb import db
-    db = db();
+    from db.bretDb import insertCheckin, getAllCheckins
     checkinTime = datetime.now()
     if request.json and 'datetime' in request.json:
         checkinTime = parser.parse(request.json['datetime'])
-    db.insertCheckin(checkinTime)
-    return str(list(reversed(db.getAllCheckins()))[0])
+    insertCheckin(checkinTime)
+    return str(list(reversed(getAllCheckins()))[0])
 
 @auth.get_password
 def get_password(username):
