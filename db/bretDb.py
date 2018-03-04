@@ -31,7 +31,6 @@ def transaction(func):
 @transaction
 def insertCheckin(cursor, datetime):
     cursor.execute('SELECT max(`id`) from `checkins`;')
-    #self.cursor.execute('SELECT * from `checkins`;')
     results = cursor.fetchall()
     if results is None or len(results) == 0 or results[0][0] == None:
         nextId = 0
