@@ -8,5 +8,6 @@ stuffToKnow.txt
 *.conf
 insertReadCheckin.py
 
+.vscode/
 bretenv/
 logs/
