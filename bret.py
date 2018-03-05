@@ -10,6 +10,7 @@ from db.bretDb import insertCheckin, getAllCheckins
 confData = json.load(open('ontime.conf'))
 users = confData["users"]
 APPKEYS = confData["APPKEYS"]
+onTimeTime = parser.parse(confData["time"]).time()
 
 application = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -27,7 +28,7 @@ def require_appkey(view_function):
 @application.route("/")
 def bret():
     from domain.checkins import checkins
-    checkins = checkins()
+    checkins = checkins(onTimeTime)
     return render_template('bretOnTime.html', isOnTime=checkins.isOnTime())
 
 @application.route("/checkin/list")

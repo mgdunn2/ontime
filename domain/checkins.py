@@ -2,8 +2,9 @@ from db.bretDb import insertCheckin, getAllCheckins
 from datetime import datetime, timedelta, time
 
 class checkins():
-    def __init__(self):
+    def __init__(self, onTimeTime):
         self.checkins = getAllCheckins()
+        self.onTimeTime = onTimeTime
 
     def getFirstCheckinForDay(self):
         checkins = self.checkins
@@ -39,8 +40,8 @@ class checkins():
     def isOnTime(self):
         checkinTime = self.getFirstCheckinForDay()
         prevCheckinTime = self.getFirstCheckinForPrevDay()
-        if prevCheckinTime is not None and datetime.now().time() < time(hour=9, minute=45):
-            return prevCheckinTime.time() < time(hour=9, minute=45)
+        if prevCheckinTime is not None and datetime.now().time() < self.onTimeTime:
+            return prevCheckinTime.time() < self.onTimeTime
         elif checkinTime is not None:
-            return checkinTime.time() < time(hour=9,minute=45)
+            return checkinTime.time() < self.onTimeTime
         return False
