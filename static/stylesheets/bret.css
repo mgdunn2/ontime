@@ -1,20 +1,23 @@
 .bret-yes {
 	text-align: center;
 	color: green;
+	font-size: 80px;
 }
 
 .bret-no {
 	text-align: center;
 	color: red;
+	font-size: 80px;
 }
 
 .bret-maybe {
 	text-align: center;
 	color: black;
+	font-size: 80px;
 }
 
 .streak {
 	text-align: center;
 	color: black;
-	font-size: 16px;
+	font-size: 30px;
 }
