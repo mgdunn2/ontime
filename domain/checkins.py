@@ -6,45 +6,34 @@ class checkins():
         self.checkins = getAllCheckins()
         self.onTimeTime = onTimeTime
 
-    def getFirstCheckinForDay(self):
-        checkins = self.checkins
-        filteredCheckins = []
-        if datetime.now().weekday() == 5:
-            filteredCheckins = [checkin for checkin in checkins if checkin.date() == (datetime.now() - timedelta(days=1)).date()]
-        elif datetime.now().weekday() == 6:
-            filteredCheckins = [checkin for checkin in checkins if checkin.date() == (datetime.now() - timedelta(days=2)).date()]
-        else:
-            filteredCheckins = [checkin for checkin in checkins if checkin.date() == datetime.now().date()]
-        if len(filteredCheckins) > 0:
-            return filteredCheckins[0]
-        else:
-            return None
-
-    def getFirstCheckinForPrevDay(self):
-        checkins = self.checkins
-        filteredCheckins = []
-        if (datetime.now() - timedelta(days=1)).weekday() == 5:
-            filteredCheckins = [checkin for checkin in checkins if checkin.date() == ((datetime.now() - timedelta(days=1)) - timedelta(days=1)).date()]
-        elif (datetime.now() - timedelta(days=1)).weekday() == 6:
-            filteredCheckins = [checkin for checkin in checkins if checkin.date() == ((datetime.now() - timedelta(days=1)) - timedelta(days=2)).date()]
-        else:
-            filteredCheckins = [checkin for checkin in checkins if checkin.date() == (datetime.now() - timedelta(days=1)).date()]
-        if len(filteredCheckins) > 0:
-            return filteredCheckins[0]
-        else:
-            return None
+    def getFirstCheckinForDayReturnFridayIfWeekend(self, dateTime=datetime.now()):
+        if dateTime.weekday() == 5:
+            dateTime = dateTime - timedelta(days=1)
+        if dateTime.weekday() == 6:
+            dateTime = dateTime - timedelta(days=2)
+        for checkin in self.getRelevantCheckins():
+            if checkin.date() == dateTime.date():
+                return checkin
+        return None
 
     def getMostRecent(self):
         return list(reversed(self.checkins))[0]
 
-    def isOnTime(self):
-        checkinTime = self.getFirstCheckinForDay()
-        prevCheckinTime = self.getFirstCheckinForPrevDay()
-        if prevCheckinTime is not None and datetime.now().time() < self.onTimeTime:
-            return prevCheckinTime.time() < self.onTimeTime
-        elif checkinTime is not None:
-            return checkinTime.time() < self.onTimeTime
-        return False
+    def isOnTime(self, dateTime=datetime.now()):
+        dateTime = dateTime - timedelta(hours=12)
+        checkin = self.getFirstCheckinForDayReturnFridayIfWeekend(dateTime)
+        # If there is a checkin time for the day, see if it is on time
+        if checkin is not None:
+            if checkin.time() < self.onTimeTime:
+                return 1
+            else:
+                return -1
+        # If there isn't a checkin yet but we aren't past the late time
+        # then return 0 to indicate that it's a maybe
+        if dateTime.time() < self.onTimeTime:
+            return 0
+        # Finally, there's no checkin and it's past time so return -1 for late
+        return -1
 
     def getRelevantCheckins(self):
         weekdays = [checkin for checkin in self.checkins if checkin.weekday() < 5]
@@ -56,4 +45,23 @@ class checkins():
             s.add(checkin.date())
             relevantCheckins.append(checkin)
         return relevantCheckins
+
+    def getStreak(self, dateTime=datetime.now()):
+        count = 0
+        result = 0
+        while result >= 0: 
+            result = self.getIfOnTimeWeekday(dateTime)
+            if result == 1:
+                count = count + 1
+            dateTime = dateTime - timedelta(days=1)
+        return count
+
+    def getIfOnTimeWeekday(self, dateTime):
+        if dateTime.weekday() > 4:
+            return 0
+        return self.isOnTime(dateTime)
+
+
+
+
 

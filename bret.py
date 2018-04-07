@@ -29,7 +29,7 @@ def require_appkey(view_function):
 def bret():
     from domain.checkins import checkins
     checkins = checkins(onTimeTime)
-    return render_template('bretOnTime.html', isOnTime=checkins.isOnTime())
+    return render_template('bretOnTime.html', isOnTime=checkins.isOnTime(), streak=checkins.getStreak(datetime.now()))
 
 @application.route("/checkin/list")
 @auth.login_required
