@@ -45,3 +45,15 @@ class checkins():
         elif checkinTime is not None:
             return checkinTime.time() < self.onTimeTime
         return False
+
+    def getRelevantCheckins(self):
+        weekdays = [checkin for checkin in self.checkins if checkin.weekday() < 5]
+        s = set()
+        relevantCheckins = []
+        for checkin in weekdays:
+            if checkin.date() in s:
+                continue
+            s.add(checkin.date())
+            relevantCheckins.append(checkin)
+        return relevantCheckins
+

@@ -36,6 +36,13 @@ def bret():
 def checkinList():
     return jsonify(getAllCheckins())
 
+@application.route("/checkin/listRelevant")
+@auth.login_required
+def checkinListRelevant():
+    from domain.checkins import checkins
+    checkins = checkins(onTimeTime)
+    return jsonify(checkins.getRelevantCheckins())
+
 @application.route("/api/<appkey>/addtime", methods=["POST"])
 @require_appkey
 def addtime(appkey):
