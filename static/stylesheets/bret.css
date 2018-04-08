@@ -1,23 +1,30 @@
-.bret-yes {
-	text-align: center;
-	color: green;
-	font-size: 80px;
+html {
+    min-height: 100%;
+    cursor:url(../bret.png), auto;
+    margin: 0;
+    min-height: 100%;
 }
 
-.bret-no {
-	text-align: center;
-	color: red;
-	font-size: 80px;
+.yes {
+    text-align: center;
+    color: green;
+    font-size: 80px;
 }
 
-.bret-maybe {
-	text-align: center;
-	color: black;
-	font-size: 80px;
+.no {
+    text-align: center;
+    color: red;
+    font-size: 80px;
+}
+
+.maybe {
+    text-align: center;
+    color: black;
+    font-size: 80px;
 }
 
 .streak {
-	text-align: center;
-	color: black;
-	font-size: 30px;
+    text-align: center;
+    color: black;
+    font-size: 30px;
 }
