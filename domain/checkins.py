@@ -20,7 +20,7 @@ class checkins():
         return list(reversed(self.checkins))[0]
 
     def isOnTime(self, dateTime=datetime.now()):
-        dateTime = dateTime - timedelta(hours=12)
+        dateTime = dateTime
         checkin = self.getFirstCheckinForDayReturnFridayIfWeekend(dateTime)
         # If there is a checkin time for the day, see if it is on time
         if checkin is not None:
@@ -49,7 +49,7 @@ class checkins():
     def getStreak(self, dateTime=datetime.now()):
         count = 0
         result = 0
-        while result >= 0: 
+        while result >= 0:
             result = self.getIfOnTimeWeekday(dateTime)
             if result == 1:
                 count = count + 1
