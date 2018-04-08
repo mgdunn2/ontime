@@ -5,6 +5,11 @@ html {
     min-height: 100%;
 }
 
+body {
+    margin: 0; 
+    background: #F8F8FF;
+}
+
 .yes {
     text-align: center;
     color: green;
@@ -19,12 +24,27 @@ html {
 
 .maybe {
     text-align: center;
-    color: black;
+    color: #1a283f;
     font-size: 80px;
 }
 
 .streak {
     text-align: center;
-    color: black;
+    color: #1a283f;
     font-size: 30px;
+}
+
+
+.header {
+ font-size: 60px !important;
+ /* This ribbon is based on a 16px font side and a 24px vertical rhythm. I've used em's to position each element for scalability. If you want to use a different font size you may have to play with the position of the ribbon elements */
+
+ width: 100%;
+    
+ position: relative;
+ background: #1a283f;
+ color: #F8F8FF;
+ text-align: center;
+ margin: 0 auto;
+ position: relative;
 }
