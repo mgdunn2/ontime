@@ -4,16 +4,27 @@ from datetime import datetime, timedelta, time
 class checkins():
     def __init__(self, onTimeTime):
         self.checkins = getAllCheckins()
+        self.relevantCheckins = self.getRelevantCheckins()
         self.onTimeTime = onTimeTime
+
+    def getRelevantCheckins(self):
+        weekdays = [checkin for checkin in self.checkins if checkin.weekday() < 5]
+        s = set()
+        relevantCheckins = []
+        for checkin in weekdays:
+            if checkin.date() in s:
+                continue
+            s.add(checkin.date())
+            relevantCheckins.append(checkin)
+        return {dateTime.date(): dateTime for dateTime in relevantCheckins}
 
     def getFirstCheckinForDayReturnFridayIfWeekend(self, dateTime=datetime.now()):
         if dateTime.weekday() == 5:
             dateTime = dateTime - timedelta(days=1)
         if dateTime.weekday() == 6:
             dateTime = dateTime - timedelta(days=2)
-        for checkin in self.getRelevantCheckins():
-            if checkin.date() == dateTime.date():
-                return checkin
+        if dateTime.date() in self.relevantCheckins:
+            return self.relevantCheckins[dateTime.date()]
         return None
 
     def getMostRecent(self):
@@ -34,17 +45,6 @@ class checkins():
             return 0
         # Finally, there's no checkin and it's past time so return -1 for late
         return -1
-
-    def getRelevantCheckins(self):
-        weekdays = [checkin for checkin in self.checkins if checkin.weekday() < 5]
-        s = set()
-        relevantCheckins = []
-        for checkin in weekdays:
-            if checkin.date() in s:
-                continue
-            s.add(checkin.date())
-            relevantCheckins.append(checkin)
-        return relevantCheckins
 
     def getStreak(self, dateTime=datetime.now()):
         count = 0

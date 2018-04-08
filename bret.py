@@ -41,7 +41,7 @@ def checkinList():
 def checkinListRelevant():
     from domain.checkins import checkins
     checkins = checkins(onTimeTime)
-    return jsonify(checkins.getRelevantCheckins())
+    return jsonify(sorted(checkins.getRelevantCheckins().values()))
 
 @application.route("/api/<appkey>/addtime", methods=["POST"])
 @require_appkey
