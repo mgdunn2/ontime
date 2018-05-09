@@ -15,6 +15,18 @@ onTimeTime = parser.parse(confData["time"]).time()
 application = Flask(__name__)
 auth = HTTPBasicAuth()
 
+@application.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
 def require_appkey(view_function):
     @wraps(view_function)
     # the new, post-decoration function. Note *args and **kwargs here.

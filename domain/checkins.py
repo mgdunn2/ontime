@@ -33,8 +33,10 @@ class checkins():
     def isOnTime(self, dateTime=datetime.now()):
         dateTime = dateTime
         checkin = self.getFirstCheckinForDayReturnFridayIfWeekend(dateTime)
+        print checkin
         # If there is a checkin time for the day, see if it is on time
         if checkin is not None:
+            print checkin
             if checkin.time() < self.onTimeTime:
                 return 1
             else:
